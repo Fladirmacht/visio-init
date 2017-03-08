@@ -22,19 +22,8 @@ sudo add-apt-repository -y ppa:bitcoin/bitcoin
 sudo apt-get update
 sudo apt-get install -y libdb4.8-dev libdb4.8++-dev
 
-cd /usr/local
-file=/usr/local/visioX
-if [ ! -e "$file" ]
-then
-        sudo git clone https://github.com/Fladirmacht/visio.git
-fi
-
-cd /usr/local/visioX/src
-file=/usr/local/visioX/src/visiod
-if [ ! -e "$file" ]
-then
-        sudo make -j$NPROC -f makefile.unix
-fi
+cd src
+make -j$NPROC -f makefile.unix
 
 sudo cp /usr/local/visioX/src/visiod /usr/bin/visiod
 
@@ -46,16 +35,9 @@ if [ ! -e "$file" ]
 then
         sudo mkdir $HOME/.visio
 fi
-printf '%s\n%s\n%s\n%s\n' 'daemon=1' 'server=1' 'rpcuser=u' 'rpcpassword=p' | sudo tee $HOME/.visio/visio.conf
-file=/etc/init.d/visio
-if [ ! -e "$file" ]
-then
-        printf '%s\n%s\n' '#!/bin/sh' 'sudo visiod' | sudo tee /etc/init.d/visio
-        sudo chmod +x /etc/init.d/visio
-        sudo update-rc.d visio defaults
-fi
 
-/usr/bin/visiod
+printf '%s\n%s\n%s\n%s\n' 'daemon=1' 'server=1' 'rpcuser=u' 'rpcpassword=p' | sudo tee $HOME/.visio/visio.conf
+
 echo "Visio has been setup successfully and is running..."
 exit 0
 
